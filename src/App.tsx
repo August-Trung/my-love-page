@@ -11,6 +11,7 @@ import Anniversary from "./pages/Anniversary";
 import LunarFestival from "./pages/LunarFestival";
 import Birthday from "./pages/Birthday";
 import Album from "./pages/Album";
+import LoveQuoteManager from "./components/LoveQuoteManager";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
 				<Route path="/" element={<Index />} />
 				<Route path="/album" element={<Album />} />
 				<Route path="/events" element={<Events />} />
+				<Route path="/love-quotes" element={<LoveQuoteManager />} />
 				<Route path="/events/valentine" element={<Valentine />} />
 				<Route path="/events/christmas" element={<Christmas />} />
 				<Route path="/events/anniversary" element={<Anniversary />} />

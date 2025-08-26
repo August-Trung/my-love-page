@@ -2,84 +2,88 @@ import React from "react";
 
 type CountdownEvent = {
 	name: string;
-	date: string; // yyyy-mm-dd
+	date: string; // yyyy-mm-dd (local-safe)
 	emoji: string;
 };
 
+// ===== Utils: KHÔNG dùng toISOString, KHÔNG parse "YYYY-MM-DD" trực tiếp =====
+const parseYMD = (s: string): Date => {
+	const [y, m, d] = s.split("-").map(Number);
+	return new Date(y, (m as number) - 1, d);
+};
+const formatYMD = (d: Date): string => {
+	const y = d.getFullYear();
+	const m = String(d.getMonth() + 1).padStart(2, "0");
+	const day = String(d.getDate()).padStart(2, "0");
+	return `${y}-${m}-${day}`;
+};
+const formatDDMMYYYY = (ymd: string): string => {
+	const [y, m, d] = ymd.split("-");
+	return `${d}-${m}-${y}`;
+};
+
+// Luôn lấy event tới (local time)
 function nextEventDate(month: number, day: number): Date {
-	// Luôn lấy event tiếp theo (dù năm nào)
 	const now = new Date();
-	let year = now.getFullYear();
-	let d = new Date(year, month - 1, day);
-	if (d < now) d = new Date(year + 1, month - 1, day);
+	const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+	let d = new Date(now.getFullYear(), month - 1, day);
+	if (d < today) d = new Date(now.getFullYear() + 1, month - 1, day);
 	return d;
 }
 
-// Lấy ngày kỷ niệm tròn năm tính từ ngày yêu
+// Kỷ niệm tròn năm tính từ startDate (YYYY-MM-DD)
 function nextAnniversary(startDate: string): Date {
-	const d0 = new Date(startDate);
+	const d0 = parseYMD(startDate); // tránh UTC-parse
 	const now = new Date();
-	let next = new Date(d0);
-	next.setFullYear(now.getFullYear());
-	if (next < now) next.setFullYear(now.getFullYear() + 1);
+	const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+	let next = new Date(today.getFullYear(), d0.getMonth(), d0.getDate());
+	if (next < today)
+		next = new Date(today.getFullYear() + 1, d0.getMonth(), d0.getDate());
 	return next;
 }
 
-const UPCOMING_EVENTS: (startDate: string) => CountdownEvent[] = (
-	startDate
-) => [
+const UPCOMING_EVENTS = (startDate: string): CountdownEvent[] => [
 	{
 		name: "Kỷ niệm yêu (tròn năm)",
-		date: nextAnniversary(startDate).toISOString().slice(0, 10),
+		date: formatYMD(nextAnniversary(startDate)),
 		emoji: "💖",
 	},
 	{
 		name: "Valentine",
-		date: nextEventDate(2, 14).toISOString().slice(0, 10),
+		date: formatYMD(nextEventDate(2, 14)),
 		emoji: "💌",
 	},
 	{
 		name: "White Day",
-		date: nextEventDate(3, 14).toISOString().slice(0, 10),
+		date: formatYMD(nextEventDate(3, 14)),
 		emoji: "🤍",
 	},
 	{
 		name: "Sinh nhật người ấy",
-		date: "1999-03-08", // Cập nhật theo info actual nếu muốn
+		// lấy đúng MM/DD hàng năm, không dùng chuỗi gốc + toISOString
+		date: formatYMD(nextEventDate(8, 27)),
 		emoji: "🎂",
 	},
 	{
 		name: "Giáng sinh",
-		date: nextEventDate(12, 24).toISOString().slice(0, 10),
+		date: formatYMD(nextEventDate(12, 24)),
 		emoji: "🎄",
 	},
 ];
 
 function daysBetween(a: string, b: string) {
-	const d1 = new Date(a);
-	d1.setHours(0, 0, 0, 0);
-	const d2 = new Date(b);
-	d2.setHours(0, 0, 0, 0);
-	return Math.ceil((d2.getTime() - d1.getTime()) / (1000 * 3600 * 24));
+	// Dùng parseYMD để đảm bảo mốc 00:00 LOCAL
+	const d1 = parseYMD(a);
+	const d2 = parseYMD(b);
+	const ms = d2.getTime() - d1.getTime();
+	return Math.ceil(ms / (1000 * 3600 * 24));
 }
 
 const LoveCountdowns: React.FC<{ startDate: string }> = ({ startDate }) => {
-	const nowStr = new Date().toISOString().slice(0, 10);
+	const nowStr = formatYMD(new Date()); // hôm nay theo local
 
 	const events = React.useMemo(() => {
-		let e = UPCOMING_EVENTS(startDate);
-		// Nếu event birthday đã qua hôm nay thì lấy năm sau
-		e = e.map((ev) => {
-			if (ev.name === "Sinh nhật người ấy") {
-				const d = new Date();
-				const curYear = d.getFullYear();
-				let bd = new Date(curYear, 2, 8); // 8/3
-				if (bd < d) bd = new Date(curYear + 1, 2, 8);
-				return { ...ev, date: bd.toISOString().slice(0, 10) };
-			}
-			return ev;
-		});
-		e = e.sort(
+		const e = UPCOMING_EVENTS(startDate).sort(
 			(a, b) => daysBetween(nowStr, a.date) - daysBetween(nowStr, b.date)
 		);
 		return e;
@@ -98,7 +102,7 @@ const LoveCountdowns: React.FC<{ startDate: string }> = ({ startDate }) => {
 								{ev.emoji} {ev.name}
 							</span>
 							<span className="text-xs text-pink-500">
-								({ev.date})
+								({formatDDMMYYYY(ev.date)})
 							</span>
 							{days > 0 ? (
 								<span className="text-lg text-pink-700 font-semibold">

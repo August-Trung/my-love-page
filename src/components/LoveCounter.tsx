@@ -28,7 +28,7 @@ const LoveCounter: React.FC<{
 	return (
 		<div className="flex flex-col items-center justify-center select-none relative z-10 py-2">
 			<div
-				className="rounded-full bg-pastelHeart bg-opacity-75 border-4 border-pink-300 mx-auto flex flex-col items-center justify-center animate-heartBeat"
+				className="rounded-full bg-pastelHeart bg-opacity-75 border-4 border-pink-300 mx-auto flex flex-col items-center justify-center animate-floatupanddown"
 				style={{
 					width: 184,
 					height: 184,

@@ -1,15 +1,9 @@
-import {heroui} from "@heroui/theme"
-
-
+import { heroui } from "@heroui/theme";
 export default {
 	content: [
 		"./index.html",
-		"./src/layouts/**/*.{js,ts,jsx,tsx,mdx}",
-		"./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/**/*.{js,ts,jsx,tsx}",
 		"./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
-		"./app/**/*.{ts,tsx}",
-		"./src/**/*.{ts,tsx}",
 	],
 	darkMode: ["class"],
 	prefix: "",
@@ -83,7 +77,8 @@ export default {
 				sm: "calc(var(--radius) - 4px)",
 			},
 			keyframes: {
-				heartBeat: {
+				heartbeat: {
+					// chuyển thành lowercase
 					"0%,100%": { transform: "scale(1)" },
 					"14%": { transform: "scale(1.13)" },
 					"28%": { transform: "scale(0.95)" },
@@ -110,10 +105,15 @@ export default {
 					"0%": { transform: "scale(0)" },
 					"100%": { transform: "scale(1)" },
 				},
+				floatupanddown: {
+					"0%, 100%": { transform: "translateY(0)" },
+					"50%": { transform: "translateY(-6px)" },
+				},
 			},
 			animation: {
-				heartBeat: "heartBeat 1.6s infinite",
+				heartbeat: "heartbeat 1.6s infinite",
 				float: "float 4s ease-in-out infinite alternate",
+				floatupanddown: "floatupanddown 3s ease-in-out infinite",
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
 				fade: "fade 0.3s ease-in-out",

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import HeartParticles from "../components/HeartParticles";
 import AvatarLover from "../components/AvatarLover";
 import LoveCounter from "../components/LoveCounter";
-// import LoveQuote from "../components/LoveQuote";
+import HeartBeat from "../components/HeartBeat";
 import LoveQuoteManager from "../components/LoveQuoteManager";
 import NavHome from "../components/NavHome";
 import LoveMilestones from "../components/LoveMilestones";
@@ -68,7 +68,12 @@ const Index = () => {
 				<div className="flex-1 flex justify-end items-center">
 					<AvatarLover {...LOVERS[0]} />
 				</div>
-				<div className="w-0 flex-shrink-0 md:w-24" />
+
+				{/* Tim đập ở giữa */}
+				<div className="w-16 flex-shrink-0 flex justify-center items-center">
+					<HeartBeat />
+				</div>
+
 				<div className="flex-1 flex justify-start items-center">
 					<AvatarLover {...LOVERS[1]} />
 				</div>

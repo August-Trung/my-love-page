@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@config "../../tailwind.config.js";
+@config "../../tailwind.config.ts";
 
 @theme inline {
 	--radius-sm: calc(var(--radius) - 4px);
@@ -42,7 +42,7 @@
 }
 
 /* Custom animations */
-@keyframes heartBeat {
+@keyframes heartbeat {
 	0%,
 	100% {
 		transform: scale(1);
@@ -180,5 +180,10 @@
 
 	.shadow-pastel {
 		box-shadow: 0 4px 20px rgba(255, 182, 193, 0.2);
+	}
+
+	.animate-heartbeat {
+		animation: heartbeat 1.5s ease-in-out infinite;
+		text-shadow: 0 0 10px rgba(255, 182, 193, 0.6);
 	}
 }
